@@ -1,2 +1,27 @@
 <div id='pokedex'>
+
+  <form>
+    <label for="pokemon_name">Name</label>
+    <input type="text" name="pokemon[name]" id="pokemon_name">
+
+
+    <label for="pokemon_attack">Attack</label>
+    <input type="number" name="pokemon[attack]" id="pokemon_attack">
+
+    <label for="pokemon_defense">Defense</label>
+    <input type="number" name="pokemon[defense]" id="pokemon_defense">
+
+    <label for="image_url">Image Url</label>
+    <input type="url" name="pokemon[image_url]" id="image_url">
+
+    <label for="moves">Moves</label>
+    <input type="text" name="pokemon[moves][]" id="moves">
+
+    <label for="poke_type">Poke-Type</label>
+    <input type="text" name="pokemon[poke_type]" id="poke_type">  
+
+    <input type="submit">
+
+  </form>
+
 </div>

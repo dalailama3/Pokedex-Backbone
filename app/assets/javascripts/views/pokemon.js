@@ -1,12 +1,14 @@
 
 window.Pokedex.Views.Pokemon = Backbone.View.extend({
 
-  // initialize: function () {
-  //   this.listenTo(this.$pokeList, this.selectPokemonFromList);
-  // },
+  initialize: function() {
+    this.setElement($("#pokedex"));
+    this.pokemon;
+  },
 
   events: {
-    'click ul li.poke-list-item': 'selectPokemonFromList'
+    "click ul li.poke-list-item": "selectPokemonFromList",
+    "submit form": "submitPokemonForm"
   },
 
   addPokemonToList: function (pokemon) {
@@ -21,9 +23,10 @@ window.Pokedex.Views.Pokemon = Backbone.View.extend({
 
   refreshPokemon: function () {
     var me = this;
-    me.pokemon = new Pokedex.Collections.Pokemon();
-    me.pokemon.fetch({
+    this.pokemon = new Pokedex.Collections.Pokemon();
+    this.pokemon.fetch({
       success: function () {
+
         me.pokemon.each(function(pokemon) {
           me.addPokemonToList(pokemon);
         });
@@ -40,12 +43,15 @@ window.Pokedex.Views.Pokemon = Backbone.View.extend({
     for (prop in pokemon.attributes) {
       if (prop === "image_url") {
         $div.find("img").attr("src", pokemon.attributes.image_url);
+      } else if (prop === "moves") {
+        var $p = $("<p>");
+        $p.text(prop[0].toUpperCase() + prop.slice(1) + ": " + pokemon.attributes[prop].join(", "));
+        $div.append($p);
       } else if (prop !== "id") {
-        $div.data("data-" + prop, pokemon.attributes[prop]);
         var $p = $("<p>");
         $p.text(prop[0].toUpperCase() + prop.slice(1) + ": " + pokemon.attributes[prop]);
         $div.append($p);
-      }
+      } 
     }
 
     this.$pokeDetail = $div;
@@ -60,7 +66,31 @@ window.Pokedex.Views.Pokemon = Backbone.View.extend({
     var pokeId = $(event.currentTarget).data("data-id");
     var selectedPokemon = this.pokemon._byId[pokeId];
     this.renderPokemonDetail(selectedPokemon, event);
-  }
+  },
 
+  createPokemon: function (attributes, cb) {
+    var me = this;
+    var newPokemon = new Pokedex.Models.Pokemon();
+    newPokemon.save(attributes, {
+      success: function (model) {
+        me.pokemon.push(model);
+        me.addPokemonToList(model);
+        cb(model);
+      },
+      error: function (model, response) {
+        alert(response.responseText);
+      }
+    });
+  },
+
+  submitPokemonForm: function (event) {
+    var me = this;
+    var action = event;
+    event.preventDefault();
+    var form = $(event.currentTarget).serializeJSON();
+    this.createPokemon(form, function (model, event) {
+      me.renderPokemonDetail(model, action)
+    });
+  }
 
 });

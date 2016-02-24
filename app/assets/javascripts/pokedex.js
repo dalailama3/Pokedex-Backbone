@@ -8,7 +8,8 @@ window.Pokedex = {
     var thing = new Pokedex.Views.Pokemon();
     thing.refreshPokemon();
 
-    $("body").html(thing.$el);
+    $("body").append(thing.$el);
+
   }
 };
 

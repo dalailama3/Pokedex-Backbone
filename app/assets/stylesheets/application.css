@@ -128,3 +128,8 @@ ul {
   color: white;
   font-size: 20px;
 }
+
+form {
+  font-size: 20px;
+  background: red;
+}
